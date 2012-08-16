@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:background="@drawable/pop"
+    android:gravity="center_vertical"
+    android:orientation="horizontal" >
+
+    <Button
+        android:layout_width="45dip"
+        android:layout_height="31dip"
+        android:text="表情"
+        android:textColor="#213243"
+        android:textSize="15dip" >
+    </Button>
+    
+    <Button
+        android:layout_width="45dip"
+        android:layout_height="31dip"
+        android:text="表情"
+        android:textColor="#213243"
+        android:textSize="15dip" >
+    </Button>
+
+</LinearLayout>
