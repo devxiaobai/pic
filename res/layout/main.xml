@@ -21,6 +21,14 @@
         android:text="表情键盘"
         android:textColor="#213243"
         android:textSize="15dip" />
+     <EditText
+        android:id="@+id/message_result"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_vertical"
+        android:layout_marginRight="5dip"
+        android:hint="请输入内容"
+        android:imeOptions="actionDone" />
 
 
     <LinearLayout

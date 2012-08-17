@@ -36,7 +36,8 @@ public class ManagerFragment extends Fragment {
 			public boolean onItemLongClick(AdapterView<?> arg0, View arg1,
 					int arg2, long arg3) {
 				deletePop.showAsDropDown(arg1);
-				//deletePop.showAtLocation(arg1, Gravity.LEFT | Gravity.TOP, 0, 0);
+				// deletePop.showAtLocation(arg1, Gravity.TOP|Gravity.LEFT, 0,
+				// 0);
 				return false;
 			}
 		});
@@ -51,7 +52,7 @@ public class ManagerFragment extends Fragment {
 		deletePop.setFocusable(true);
 		// 设置允许在外点击消失
 		deletePop.setOutsideTouchable(true);
-		//刷新状态（必须刷新否则无效）
+		// 刷新状态（必须刷新否则无效）
 		deletePop.update();
 		deletePop.setBackgroundDrawable(new BitmapDrawable());
 	}

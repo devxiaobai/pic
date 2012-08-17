@@ -3,14 +3,16 @@
     android:layout_width="fill_parent"
     android:layout_height="fill_parent" >
 
-    <include android:id="@+id/top" layout="@layout/topbar" />
+    <include
+        android:id="@+id/top"
+        layout="@layout/topbar" />
 
     <LinearLayout
+        android:id="@+id/head"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:background="#FFFFFFFF"
         android:layout_below="@id/top"
-       >
+        android:background="#FFFFFFFF" >
 
         <GridView
             xmlns:android="http://schemas.android.com/apk/res/android"
@@ -25,5 +27,40 @@
             android:stretchMode="columnWidth"
             android:verticalSpacing="10dp" />
     </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/middle"
+         android:layout_below="@id/head"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical" >
+
+        <RelativeLayout
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content" >
+
+            <TextView
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:text="回复我的提醒" />
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" >
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="其他回复提醒" />
+        </RelativeLayout>
+    </LinearLayout>
+
+    <Button
+        android:id="@+id/deleteBtn"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/middle"
+        android:text="删除并推出" />
 
 </RelativeLayout>

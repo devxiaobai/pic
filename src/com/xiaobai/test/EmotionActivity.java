@@ -3,12 +3,12 @@ package com.xiaobai.test;
 import android.app.Activity;
 import android.content.Context;
 import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.text.Spannable;
 import android.text.SpannableString;
 import android.text.style.ImageSpan;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -26,6 +26,7 @@ public class EmotionActivity extends Activity {
 	Button mEmotionButton;
 	ViewGroup rootView;
 	EditText mEditMessage;
+	EditText mMsgResult;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -33,6 +34,7 @@ public class EmotionActivity extends Activity {
 		setContentView(R.layout.main);
 		mEmotionButton = (Button) findViewById(R.id.button);
 		mEditMessage = (EditText) findViewById(R.id.message_edit);
+		mMsgResult =(EditText)findViewById(R.id.message_result);
 		mEmotionButton.setOnClickListener(new OnClickListener() {
 
 			@Override
@@ -73,26 +75,33 @@ public class EmotionActivity extends Activity {
 		@Override
 		public void onClick(View v) {
 			int index = ((EmotionButton) v).getIndex();
-//			ImageGetter imageGetter = new ImageGetter() {
-//				@Override
-//				public Drawable getDrawable(String source) {
-//					int id = Integer.parseInt(source);
-//
-//					Drawable d = getResources().getDrawable(id);
-//
-//					d.setBounds(0, 0, d.getIntrinsicWidth(),
-//							d.getIntrinsicHeight());
-//
-//					return d;
-//
-//				}
-//			};
-//			CharSequence cs = Html.fromHtml("<img src='" + mIconIds[index]
-//					+ "'/>", imageGetter, null);
-			ImageSpan span = new ImageSpan(getResources().getDrawable(mIconIds[index]));
-			SpannableString spanString = new SpannableString("face");
-			spanString.setSpan(span, 0, 4, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
-			mEditMessage.getText().append(spanString);
+			// ImageGetter imageGetter = new ImageGetter() {
+			// @Override
+			// public Drawable getDrawable(String source) {
+			// int id = Integer.parseInt(source);
+			//
+			// Drawable d = getResources().getDrawable(id);
+			//
+			// d.setBounds(0, 0, d.getIntrinsicWidth(),
+			// d.getIntrinsicHeight());
+			//
+			// return d;
+			//
+			// }
+			// };
+			// CharSequence cs = Html.fromHtml("<img src='" + mIconIds[index]
+			// + "'/>", imageGetter, null);
+			// mEditMessage.append(cs);
+
+			Drawable drawable = getResources().getDrawable(mIconIds[index]);
+			drawable.setBounds(0, 0, drawable.getIntrinsicWidth(),
+					drawable.getIntrinsicHeight());
+			ImageSpan span = new ImageSpan(drawable, ImageSpan.ALIGN_BASELINE);
+			SpannableString spanString = new SpannableString("iputface");
+			spanString.setSpan(span, 0, 4, Spannable.SPAN_INCLUSIVE_EXCLUSIVE);
+			mEditMessage.setText(spanString);
+			
+			mMsgResult.setText(mEditMessage.getText().toString());
 
 		}
 	};
