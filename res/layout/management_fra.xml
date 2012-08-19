@@ -1,18 +1,20 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="fill_parent"
-    android:layout_height="fill_parent" >
+    android:layout_height="fill_parent"
+    android:background="@color/lightgray" >
 
     <include
         android:id="@+id/top"
         layout="@layout/topbar" />
 
     <LinearLayout
-        android:id="@+id/head"
+        android:id="@+id/gridlayout"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:layout_below="@id/top"
-        android:background="#FFFFFFFF" >
+        android:layout_margin="5dp"
+        android:background="@color/darkgrey" >
 
         <GridView
             xmlns:android="http://schemas.android.com/apk/res/android"
@@ -25,14 +27,17 @@
             android:numColumns="auto_fit"
             android:padding="10dp"
             android:stretchMode="columnWidth"
+            android:background="@color/darkgrey"
             android:verticalSpacing="10dp" />
     </LinearLayout>
 
     <LinearLayout
         android:id="@+id/middle"
-         android:layout_below="@id/head"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
+        android:layout_below="@id/gridlayout"
+        android:layout_margin="5dp"
+        android:background="@color/white"
         android:orientation="vertical" >
 
         <RelativeLayout
@@ -40,19 +45,38 @@
             android:layout_height="wrap_content" >
 
             <TextView
+                style="@style/text_subject_style"
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
+                android:layout_alignParentLeft="true"
                 android:text="回复我的提醒" />
+
+            <CheckBox
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentRight="true" />
         </RelativeLayout>
+
+        <View
+            android:layout_width="fill_parent"
+            android:layout_height="1dp"
+            android:background="@drawable/divider_h_gray" />
 
         <RelativeLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content" >
 
             <TextView
+                style="@style/text_subject_style"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_alignParentLeft="true"
                 android:text="其他回复提醒" />
+
+            <CheckBox
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentRight="true" />
         </RelativeLayout>
     </LinearLayout>
 
@@ -61,6 +85,6 @@
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:layout_below="@id/middle"
-        android:text="删除并推出" />
+        android:text="删除并 退出" />
 
 </RelativeLayout>

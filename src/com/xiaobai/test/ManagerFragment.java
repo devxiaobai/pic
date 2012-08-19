@@ -1,61 +1,92 @@
 package com.xiaobai.test;
 
+import java.util.ArrayList;
+
 import android.content.Context;
-import android.graphics.drawable.BitmapDrawable;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.view.Gravity;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
+import android.view.View.OnTouchListener;
 import android.view.ViewGroup;
-import android.view.ViewGroup.LayoutParams;
 import android.widget.AdapterView;
+import android.widget.AdapterView.OnItemClickListener;
 import android.widget.AdapterView.OnItemLongClickListener;
 import android.widget.BaseAdapter;
 import android.widget.GridView;
 import android.widget.ImageView;
-import android.widget.PopupWindow;
 import android.widget.TextView;
+import android.widget.Toast;
 
 public class ManagerFragment extends Fragment {
-
+	private Integer[] mThumbIds = { R.drawable.head, R.drawable.head,
+			R.drawable.head, R.drawable.head };
 	GridView grid;
-
-	PopupWindow deletePop;
+	boolean removeState = false;
 
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
 		View view = inflater.inflate(R.layout.management_fra, null);
 		grid = (GridView) view.findViewById(R.id.myGrid);
-		grid.setAdapter(new ImageAdapter(getActivity()));
-		initDeletePop();
+		ArrayList<HeadName> data = new ArrayList<HeadName>();
+		for (int i = 0; i < mThumbIds.length; i++) {
+			data.add(new HeadName(mThumbIds[i], "姓名" + i));
+		}
+		grid.setAdapter(new ImageAdapter(getActivity(), data, 4));
+
 		grid.setOnItemLongClickListener(new OnItemLongClickListener() {
 
 			@Override
 			public boolean onItemLongClick(AdapterView<?> arg0, View arg1,
 					int arg2, long arg3) {
-				deletePop.showAsDropDown(arg1);
-				// deletePop.showAtLocation(arg1, Gravity.TOP|Gravity.LEFT, 0,
-				// 0);
-				return false;
+				ImageAdapter adapter = (ImageAdapter) grid.getAdapter();
+				if (arg2 < adapter.getSize()) {
+					removeState = true;
+					adapter.notifyDataSetChanged();
+				}
+				return true;
 			}
 		});
+		grid.setOnItemClickListener(new OnItemClickListener() {
+
+			@Override
+			public void onItemClick(AdapterView<?> arg0, View arg1, int arg2,
+					long arg3) {
+				Toast.makeText(getActivity(), "onItemClcik", Toast.LENGTH_SHORT)
+						.show();
+				ImageAdapter adapter = (ImageAdapter) grid.getAdapter();
+				if (removeState) {
+					if (arg2 >= adapter.getSize()) {
+						removeState = !removeState;
+						adapter.notifyDataSetChanged();
+					} else
+						adapter.remove(arg2);
+
+				} else { // 非删除状态点击事件
+					if(arg2==adapter.getAddFriendPosition()){
+						adapter.add();
+					}
+				}
+			}
+		});
+
 		return view;
 	}
 
-	private void initDeletePop() {
-		ImageView imageView = new ImageView(getActivity());
-		imageView.setImageResource(R.drawable.delete);
-		deletePop = new PopupWindow(imageView, LayoutParams.WRAP_CONTENT,
-				LayoutParams.WRAP_CONTENT, true);
-		deletePop.setFocusable(true);
-		// 设置允许在外点击消失
-		deletePop.setOutsideTouchable(true);
-		// 刷新状态（必须刷新否则无效）
-		deletePop.update();
-		deletePop.setBackgroundDrawable(new BitmapDrawable());
-	}
+	// private void initDeletePop() {
+	// ImageView imageView = new ImageView(getActivity());
+	// imageView.setImageResource(R.drawable.delete);
+	// deletePop = new PopupWindow(imageView, LayoutParams.WRAP_CONTENT,
+	// LayoutParams.WRAP_CONTENT, true);
+	// deletePop.setFocusable(true);
+	// // 设置允许在外点击消失
+	// deletePop.setOutsideTouchable(true);
+	// // 刷新状态（必须刷新否则无效）
+	// deletePop.update();
+	// deletePop.setBackgroundDrawable(new BitmapDrawable());
+	// }
 
 	@Override
 	public void onViewCreated(View view, Bundle savedInstanceState) {
@@ -68,16 +99,81 @@ public class ManagerFragment extends Fragment {
 	}
 
 	public class ImageAdapter extends BaseAdapter {
-		public ImageAdapter(Context c) {
+		private int headInOneRow;
+		private int allItemCount;
+		private int dataSize;
+		private ArrayList<HeadName> data;
+
+		private void addBlankItem() {
+			data.add(new HeadName(R.drawable.head, null));
+		}
+
+		private int calculateAllDataCount() {
+			return headInOneRow * ((dataSize + headInOneRow) / headInOneRow);
+		}
+
+		private void populateData() { // 计算
+			allItemCount = calculateAllDataCount();
+			data.add(new HeadName(R.drawable.add_friend, null));// add friend
+			for (int i = data.size(); i < allItemCount; i++) {// 空白
+				addBlankItem();
+			}
+		}
+		
+		public int getAddFriendPosition(){
+			return dataSize;
+		}
+
+		public void remove(int position) {
+			data.remove(position);
+			dataSize--;
+			int newItemsCount = calculateAllDataCount();
+			if (allItemCount == newItemsCount) {
+				addBlankItem();
+			} else {
+				for (int i = data.size() - 1, count = 0; i >= 0
+						&& count < headInOneRow-1; count++, i--) {
+					data.remove(i);
+				}
+			}
+			allItemCount = newItemsCount;
+			this.notifyDataSetChanged();
+		}
+
+		public void add() {
+			data.add(dataSize, new HeadName(R.drawable.head, "姓名"));
+			dataSize++;
+			int newItemsCount = calculateAllDataCount();
+			if (allItemCount == newItemsCount) {
+				data.remove(data.size() - 1);
+			} else {
+				for (int i = 0; i < headInOneRow-1; i++) {
+					addBlankItem();
+				}
+			}
+			allItemCount = newItemsCount;
+			this.notifyDataSetChanged();
+		}
+
+		public int getSize() {
+			return dataSize;
+		}
+
+		public ImageAdapter(Context c, ArrayList<HeadName> data,
+				int headInOneRow) {
 			mContext = c;
+			this.headInOneRow = headInOneRow;
+			this.dataSize = data.size();
+			this.data = data;
+			populateData();
 		}
 
 		public int getCount() {
-			return mThumbIds.length;
+			return data.size();
 		}
 
 		public Object getItem(int position) {
-			return position;
+			return data.get(position);
 		}
 
 		public long getItemId(int position) {
@@ -92,22 +188,64 @@ public class ManagerFragment extends Fragment {
 			}
 			ImageView imageView = (ImageView) convertView
 					.findViewById(R.id.grid_item_image);
-			imageView.setAdjustViewBounds(false);
-			imageView.setScaleType(ImageView.ScaleType.CENTER_CROP);
-			imageView.setImageResource(mThumbIds[position]);
-
 			TextView textView = (TextView) convertView
 					.findViewById(R.id.grid_item_label);
-			textView.setText("姓名");
+			View deleteImg = convertView.findViewById(R.id.deleteLayout);
 
+			HeadName item = data.get(position);
+			imageView.setAdjustViewBounds(false);
+			imageView.setScaleType(ImageView.ScaleType.CENTER_CROP);
+			imageView.setImageResource(item.getHeadId());
+
+			if (position <= dataSize) {
+
+				imageView.setVisibility(View.VISIBLE);
+				textView.setVisibility(View.VISIBLE);
+				textView.setText(item.getName());
+				if (removeState) {
+					// Display delete icon
+					deleteImg.setVisibility(View.VISIBLE);
+
+					// remove add friend icon from the gridview
+					if (item.getHeadId() == R.drawable.add_friend) {
+						imageView.setVisibility(View.INVISIBLE);
+						textView.setVisibility(View.INVISIBLE);
+						deleteImg.setVisibility(View.INVISIBLE);
+					}
+				} else {
+					deleteImg.setVisibility(View.INVISIBLE);
+					convertView.setVisibility(View.VISIBLE);
+				}
+			} else {
+				imageView.setVisibility(View.INVISIBLE);
+				textView.setVisibility(View.INVISIBLE);
+				deleteImg.setVisibility(View.INVISIBLE);
+			}
 			return convertView;
 		}
 
 		private Context mContext;
 
-		private Integer[] mThumbIds = { R.drawable.head, R.drawable.head,
-				R.drawable.head, R.drawable.head, R.drawable.head,
-				R.drawable.add_friend };
 	}
 
+	class HeadName {
+
+		int headId;
+
+		String name;
+
+		HeadName(int id, String name) {
+			headId = id;
+			this.name = name;
+		}
+
+		public int getHeadId() {
+			return headId;
+		}
+
+		public String getName() {
+			return name;
+		}
+
+	}
 }
